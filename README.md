@@ -1,7 +1,7 @@
-* NLP Yelp Dishes Sentiment Analysis
+# NLP Yelp Dishes Sentiment Analysis
 This project is designed to comb through Yelp reviews for various restaurants, find the different dishes that are mentioned in reviews, and then rank the dishes based on how positive people are when they talk about them in their reviews.
 
-* Running
+# Running
 This project is split up into several different independent stages.  Each stage has its own independent directory, and each directory is designed to be run as a Docker container.  Each directory has the three following files:
 1. `Makefile`
 2. `Dockerfile`
