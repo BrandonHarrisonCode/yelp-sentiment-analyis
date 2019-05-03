@@ -1,1 +1,2 @@
 flask
+spacy==2.0.18
