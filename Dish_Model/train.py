@@ -18,18 +18,21 @@ debug('Parsing training_data.csv')
 with open('training_data.csv', 'r', encoding='utf8') as file:
     for row in csv.DictReader(file):
         if row['AssignmentStatus'] == 'Approved':
-            review = row['Input.review']
+            review = row['Input.review'].lower().split('. ')
             dishes = row['Answer.utterance'].lower().replace('.', '').split(',')
-            if dishes[0] == 'none':
-                data.append((review, {'entities': []}))
-            else:
-                indices = []
-                for dish in dishes:
-                    dish = dish.strip()
-                    if dish in review and len(dish) > 0:
-                        ind = review.index(dish)
-                        indices.append((ind, ind + len(dish), 'DISH'))
-                data.append((review, {'entities': indices}))
+            for rev in review:
+                rev = rev.strip()
+                if len(rev) > 5:
+                    if dishes[0] == 'none':
+                        data.append((rev, {'entities': []}))
+                    else:
+                        indices = []
+                        for dish in dishes:
+                            dish = dish.strip()
+                            if dish in rev and len(dish) > 0:
+                                ind = rev.index(dish)
+                                indices.append((ind, ind + len(dish), 'DISH'))
+                        data.append((rev, {'entities': indices}))
 
 # A lot of the code below was taken from spacy.io's tutorial for training a custom NER model
 
