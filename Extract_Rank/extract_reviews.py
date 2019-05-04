@@ -1,6 +1,5 @@
 import time
 import ujson
-import msgpack
 
 def get_restaurants():
     f = open('../../yelp_dataset/business.json', 'r', encoding='utf8')
@@ -28,7 +27,8 @@ def get_reviews_for_restaurants(restaurants):
 if __name__ == '__main__':
     start = time.time()
     reviews = get_reviews_for_restaurants(get_restaurants())
-    print(time.time() - start)
+    mid = time.time()
+    print('Time to extract all reviews into dictionary:', mid - start)
 
     max_bytes = 2**31 - 1
     dump = ujson.dumps(reviews)
@@ -36,4 +36,4 @@ if __name__ == '__main__':
         for i in range(0, len(dump), max_bytes):
             f.write(dump[i:i + max_bytes])
 
-    print(time.time() - start)
+    print('Time to write dictionary into file:', time.time() - mid)
