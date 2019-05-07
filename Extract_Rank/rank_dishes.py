@@ -2,36 +2,47 @@ import os
 import ujson
 import spacy
 import time
-from collections import Counter
+from collections import defaultdict
+from textblob import TextBlob
 from pathlib import Path
 
-def get_dishes(nlp, reviews):
-    # for now just counts the number of times each dish is mentioned
-    dishes = Counter()
+def rank_dishes(nlp, reviews):
+    dish_polarities = defaultdict(list)
     for user_id, stars, text in reviews:
         for sentence in text.split('.'):
             doc = nlp(sentence.lower())
+            if not any(ent.label_ == 'DISH' for ent in doc.ents):
+                continue
+            polarity = TextBlob(sentence).sentiment.polarity
             for ent in doc.ents:
                 if ent.label_ == 'DISH':
-                    dishes[ent.text] += 1
-    return dishes
+                    dish_polarities[ent.text].append(polarity)
+
+    pretend_votes = []
+    dish_scores = []
+    for dish in dish_polarities:
+        dish_scores.append((dish, score(dish_polarities[dish])))
+
+    return sorted(dish_scores, key=lambda x: x[1], reverse=True)
+
+# Bayesian Average Ratings - http://www.evanmiller.org/bayesian-average-ratings.html
+def score(polarities):
+    votes = [2] * 11 
+    for polarity in polarities:
+        votes[round(polarity * 5) + 5] += 1
+    return sum(v * u for (v, u) in zip(votes, range(-5, 6))) / sum(votes)
 
 if __name__ == '__main__':
     start = time.time()
-
-    max_bytes = 2**31 - 1
-    file_path = 'reviews.json'
-    input_size = os.path.getsize(file_path)
-    with open(file_path, 'r') as f:
-        load = [f.read(max_bytes) for _ in range(0, input_size, max_bytes)]
-        reviews = ujson.loads(''.join(load))
-
-    mid = time.time()
-    print('Time to load reviews from file:', mid - start)
+    with open('emerald_reviews.json', 'r') as f:
+        reviews = ujson.loads(f.read())
     
-    restaurant_id = 'QXAEGFB4oINsVuTFxEYKFQ'
+    mid = time.time()
+    print('Time to load reviews from emerald_reviews.json:', mid - start)
+    
     nlp = spacy.load(Path('../Dish_Model/models'))
-    dishes = get_dishes(nlp, reviews['QXAEGFB4oINsVuTFxEYKFQ'])
-    print(dishes.most_common(10))
+    dishes = rank_dishes(nlp, reviews)
+    print('Time to extract and rank dishes:', time.time() - mid)
 
-    print('Time to extract dishes from a restaurant:', time.time() - mid)
+    for i in range(20):
+        print(i+1, '-', dishes[i][0], round(dishes[i][1], 3))
