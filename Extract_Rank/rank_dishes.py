@@ -21,23 +21,27 @@ def rank_dishes(nlp, reviews):
                 if ent.label_ == 'DISH':
                     dish_polarities[ent.text.split(' and ')[0].split(' with ')[0]].append(polarity)
 
-    pretend_votes = []
-    dish_scores = []
+    # Combines dishes with a similarity score of at least similarity_threshold. Picks the shortest name
     for dish in list(dish_polarities):
-        name = dish
-        polarities = dish_polarities[dish]
-        similar = []
-        del dish_polarities[dish]
-        for other in list(dish_polarities):
-            if jellyfish.jaro_distance(dish, other) > similarity_threshold:
-                similar.append(other)
-                del dish_polarities[other]
-        for other in similar:
-            if len(other) < len(name):
-                name = other
-            polarities += dish_polarities[other]
-        dish_polarities[name] = polarities
-        
+        if dish in dish_polarities:
+            name = dish
+            polarities = dish_polarities[dish]
+            similar = []
+            for other in list(dish_polarities):
+                if jellyfish.jaro_distance(dish, other) > similarity_threshold and other != dish:
+                    similar.append(other)
+            for other in similar:
+                if len(other) < len(name):
+                    name = other
+                polarities += dish_polarities[other]
+            for other in similar:
+                if other != name:
+                    del dish_polarities[other]
+            if dish != name:
+                del dish_polarities[dish]
+            dish_polarities[name] = polarities
+
+    dish_scores = []   
     for dish in dish_polarities:
         dish_scores.append((dish, score(dish_polarities[dish])))
 
