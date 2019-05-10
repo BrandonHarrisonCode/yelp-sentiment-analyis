@@ -1,5 +1,5 @@
 build:
-	docker build -t nlp-yelp .
+	docker build -t extract_reviews .
 
 run: build
-	docker run -it --rm -p 5000:5000 nlp-yelp
+	docker run -it --rm --env-file .env extract_reviews

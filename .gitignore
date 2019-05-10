@@ -1,2 +1,4 @@
 Dish_Model/data
 Extract_Rank/reviews.json
+.env
+venv/

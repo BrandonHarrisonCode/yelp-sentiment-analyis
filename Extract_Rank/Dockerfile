@@ -4,7 +4,6 @@ WORKDIR /usr/src/app
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN FLASK_APP=app.py
-COPY app.py ./
+COPY extract_reviews.py ./app.py
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["python3", "app.py"]
