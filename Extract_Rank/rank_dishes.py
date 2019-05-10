@@ -7,7 +7,7 @@ from collections import defaultdict
 from textblob import TextBlob
 from pathlib import Path
 
-similarity_threshold = 0.75
+similarity_threshold = 0.8
 
 def rank_dishes(nlp, reviews):
     dish_polarities = defaultdict(list)
