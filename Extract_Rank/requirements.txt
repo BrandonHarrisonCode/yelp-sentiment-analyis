@@ -3,3 +3,4 @@ spacy==2.0.18
 ujson
 textblob
 boto3
+jellyfish

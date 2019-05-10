@@ -2,9 +2,12 @@ import os
 import ujson
 import spacy
 import time
+import jellyfish
 from collections import defaultdict
 from textblob import TextBlob
 from pathlib import Path
+
+similarity_threshold = 0.75
 
 def rank_dishes(nlp, reviews):
     dish_polarities = defaultdict(list)
@@ -16,10 +19,25 @@ def rank_dishes(nlp, reviews):
             polarity = TextBlob(sentence).sentiment.polarity
             for ent in doc.ents:
                 if ent.label_ == 'DISH':
-                    dish_polarities[ent.text].append(polarity)
+                    dish_polarities[ent.text.split(' and ')[0].split(' with ')[0]].append(polarity)
 
     pretend_votes = []
     dish_scores = []
+    for dish in list(dish_polarities):
+        name = dish
+        polarities = dish_polarities[dish]
+        similar = []
+        del dish_polarities[dish]
+        for other in list(dish_polarities):
+            if jellyfish.jaro_distance(dish, other) > similarity_threshold:
+                similar.append(other)
+                del dish_polarities[other]
+        for other in similar:
+            if len(other) < len(name):
+                name = other
+            polarities += dish_polarities[other]
+        dish_polarities[name] = polarities
+        
     for dish in dish_polarities:
         dish_scores.append((dish, score(dish_polarities[dish])))
 
