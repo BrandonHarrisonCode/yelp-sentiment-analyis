@@ -9,7 +9,7 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      places: [{restaurant_name: 'Test1', lat: 30.2535, lng: -97.732, dishes: ['Apple', 'Potato', 'Pancakes']}, {restaurant_name: 'Test2', lat: 30.2544, lng: -97.710, dishes: []}],
+      places: [],
       center: {
         lat: 30.2532,
         lng: -97.7353
@@ -18,26 +18,15 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
-    // fetch('places.json')
-    //   .then(response => response.json())
-    //   .then((data) => {
-    //     data.results.forEach((result) => {
-    //       result.show = false; // eslint-disable-line no-param-reassign
-    //     });
-    //     this.setState({ places: data.results });
-    //   });
-  }
-
-  async getJSON(url) {
+  getJSON(url) {
     return fetch(url).then(response => {
       return response.json();
     });
   }
 
-  componentWillMount() {
-     await this.getJSON("https://localhost:5000").then(response => {
-      this.setState(places: JSON.parse(JSON.stringify(response)));
+  componentDidMount() {
+    this.getJSON("https://localhost:5000").then(response => {
+      this.setState({places: JSON.parse(JSON.stringify(response))});
     });
   }
 
