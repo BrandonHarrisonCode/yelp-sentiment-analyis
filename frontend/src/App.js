@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Place from './Place.js';
 import GoogleMapReact from 'google-map-react';
+import fetch from "node-fetch";
 
 class App extends Component {
 
@@ -26,6 +27,18 @@ class App extends Component {
     //     });
     //     this.setState({ places: data.results });
     //   });
+  }
+
+  async getJSON(url) {
+    return fetch(url).then(response => {
+      return response.json();
+    });
+  }
+
+  componentWillMount() {
+     await this.getJSON("https://localhost:5000").then(response => {
+      this.setState(places: JSON.parse(JSON.stringify(response)));
+    });
   }
 
   render() {
