@@ -116,7 +116,10 @@ def rank_dishes(nlp, business):
         dish_scores.append((dish, score(dish_polarities[dish])))
 
     business['dishes'] = sorted(dish_scores, key=lambda x: x[1], reverse=True)
-    write_to_dynamo(business)
+    try:
+        write_to_dynamo(business)
+    except Exception as e:
+        pass
 
 # Bayesian Average Ratings - http://www.evanmiller.org/bayesian-average-ratings.html
 def score(polarities):
