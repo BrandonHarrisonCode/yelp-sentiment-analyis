@@ -22,9 +22,9 @@ class Place extends React.Component {
     return (
       <div>
         <div className="icon" >
-          <p className="material-icons" style={{color: "white"}} onClick={this.toggle}>
+          <p className="material-icons" style={{color: "yellow"}} onClick={this.toggle}>
             <Restaurant/>
-            <div style={{color: 'black', fontSize: '.8em', position: 'relative', right: '2px'}}>{this.props.restaurant['restaurant_name']}</div>
+            <div style={{color: 'white', fontSize: '.8em', position: 'relative', right: '2px'}}>{this.props.restaurant['restaurant_name']}</div>
           </p>
         </div>
 
@@ -37,7 +37,7 @@ class Place extends React.Component {
           <ModalBody>
           {Object.keys(this.props.restaurant['dishes']).map((index) => {
             var rank = parseInt(index, 10) + 1;
-            if (rank > 9) {
+            if (rank > 10) {
               return ''
             }
             return <p>{rank}: {this.props.restaurant['dishes'][index]}</p>
@@ -45,7 +45,7 @@ class Place extends React.Component {
           )}
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+            <Button color="secondary" onClick={this.toggle}>Close</Button>
           </ModalFooter>
         </Modal>
       </div>

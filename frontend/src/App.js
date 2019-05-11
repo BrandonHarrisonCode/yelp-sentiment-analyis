@@ -10,7 +10,7 @@ class App extends Component {
     super()
     this.state = {
       places: [],
-      center: {
+        center: {
         lat: 30.2532,
         lng: -97.7353
       },
@@ -24,9 +24,9 @@ class App extends Component {
     });
   }
 
-  componentDidMount() {
-    this.getJSON("https://localhost:5000").then(response => {
-      this.setState({places: JSON.parse(JSON.stringify(response))});
+  async componentDidMount() {
+      await this.getJSON("https://cors-anywhere.herokuapp.com/18.206.182.37:5000").then(response => {
+      this.setState(places: JSON.parse(JSON.stringify(response)));
     });
   }
 
