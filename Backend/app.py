@@ -1,7 +1,6 @@
-from flask import Flask, request, render_template, abort, url_for
-from flask_dynamo import Dynamo
-import boto3
+from flask import Flask, request, abort
 import json
+import boto3
 from decimal import Decimal
 from boto3.session import Session
 import geopy.distance

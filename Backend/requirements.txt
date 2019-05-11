@@ -1,0 +1,5 @@
+flask
+json
+boto3
+decimal
+geopy
